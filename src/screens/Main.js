@@ -1,65 +1,52 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Dimensions} from 'react-native';
+import {View, Text, Dimensions, ScrollView} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+
 import {connect} from 'react-redux';
 import {getData} from '../store/actions/actions';
-import {LineChart} from 'react-native-chart-kit';
+
+import StatsCard from '../components/StatsCard';
+import Header from '../components/Header';
+import Chart from '../components/Chart';
+
+const colors = ['#0f0c29', '#302b63', '#24243e'];
 
 const Main = props => {
   useEffect(() => {
     props.getData();
   }, []);
   return (
-    <View>
-      <Text>Main</Text>
-      <View>
-        {props.data.confirmed.length > 0 &&
+    <View style={{flex: 1}}>
+      <Header country="WorldWide" />
+      <View style={{margin: 16, marginBottom: 2}}>
+        <Text style={{fontFamily: 'Rubik-Medium', fontSize: 16}}>Stats</Text>
+      </View>
+      <ScrollView contentContainerStyle={{alignItems: 'center'}}>
+        <StatsCard />
+        {props.data &&
+        props.data.confirmed &&
+        props.data.confirmed.length > 0 &&
         props.data.confirmed[props.data.selected] ? (
-          <LineChart
-            data={{
-              labels:
-                props.data.confirmed.length > 0
-                  ? Object.keys(props.data.confirmed[props.data.selected].data)
-                  : [],
-              datasets: [
-                {
-                  data:
-                    props.data.confirmed.length > 0
-                      ? Object.values(
-                          props.data.confirmed[props.data.selected].data,
-                        )
-                      : [],
-                },
-              ],
-            }}
-            width={Dimensions.get('window').width} // from react-native
-            height={Dimensions.get('window').height / 2}
-            // yAxisLabel="$"
-            // yAxisSuffix="k"
-            yAxisInterval={1} // optional, defaults to 1
-            chartConfig={{
-              backgroundColor: '#e26a00',
-              backgroundGradientFrom: '#fb8c00',
-              backgroundGradientTo: '#ffa726',
-              decimalPlaces: 2, // optional, defaults to 2dp
-              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              style: {
-                borderRadius: 16,
-              },
-              propsForDots: {
-                r: '6',
-                strokeWidth: '2',
-                stroke: '#ffa726',
-              },
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
+          <Chart stats={props.data.confirmed[props.data.selected].data} />
+        ) : null}
+        {props.data &&
+        props.data.recovered &&
+        props.data.recovered.length > 0 &&
+        props.data.recovered[props.data.selected] ? (
+          <Chart
+            backgroundColor="rgb(81, 176, 86)"
+            backgroundGradientFrom="rgb(81, 176, 86)"
+            backgroundGradientTo="rgb(81, 176, 86)"
+            stats={props.data.recovered[props.data.selected].data}
           />
         ) : null}
-      </View>
+        {props.data &&
+        props.data.deaths &&
+        props.data.deaths.length > 0 &&
+        props.data.deaths[props.data.selected] ? (
+          <Chart stats={props.data.deaths[props.data.selected].data} />
+        ) : null}
+      </ScrollView>
     </View>
   );
 };
