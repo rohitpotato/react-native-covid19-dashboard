@@ -7,20 +7,26 @@ const ScreenWidth = Dimensions.get('window').width;
 
 const colors = ['#0f0c29', '#302b63', '#24243e'];
 const StatsCard = props => {
+  const {confirmed, recovered, deaths} = props;
+  const active = confirmed - recovered - deaths;
   return (
     <LinearGradient colors={colors} style={styles.container}>
       <View style={styles.statsContainer}>
         <View style={styles.stat}>
           <Text style={styles.confirmedText}>CONFIRMED:</Text>
-          <Text style={styles.confirmedText}>1000</Text>
+          <Text style={styles.confirmedText}>{confirmed}</Text>
         </View>
         <View style={styles.stat}>
           <Text style={styles.recoveredText}>RECOVERED:</Text>
-          <Text style={styles.confirmedText}>1000</Text>
+          <Text style={styles.confirmedText}>{recovered}</Text>
         </View>
         <View style={styles.stat}>
           <Text style={styles.deathsText}>DEATHS:</Text>
-          <Text style={styles.confirmedText}>1000</Text>
+          <Text style={styles.confirmedText}>{deaths}</Text>
+        </View>
+        <View style={styles.stat}>
+          <Text style={styles.deathsText}>ACTIVE:</Text>
+          <Text style={styles.confirmedText}>{active}</Text>
         </View>
       </View>
     </LinearGradient>
@@ -38,7 +44,7 @@ const styles = StyleSheet.create({
     margin: 16,
     opacity: 0.85,
     borderRadius: 8,
-    width: ScreenWidth * 0.8,
+    width: ScreenWidth * 0.93,
   },
   statsContainer: {
     padding: 8,
@@ -65,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StatsCard;
+export default React.memo(StatsCard);
