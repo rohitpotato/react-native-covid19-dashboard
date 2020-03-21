@@ -7,6 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {connect} from 'react-redux';
 import SearchBar from '../components/SearchBar';
 import {setCountry} from '../store/actions/actions';
@@ -81,17 +82,19 @@ const SelectCountry = props => {
 
   return (
     <SafeAreaView>
-      <SearchBar onTextChange={onTextChange} />
-      <View style={{marginTop: 16}}>
-        <FlatList
-          keyboardShouldPersistTaps="always"
-          data={handleSearchData()}
-          keyExtractor={keyExtractor}
-          renderItem={renderListItem}
-          removeClippedSubviews={true}
-          // getItemLayout={getItemLayout}
-        />
-      </View>
+      <LinearGradient colors={['#a1c4fd', '#c2e9fb']}>
+        <SearchBar onTextChange={onTextChange} />
+        <View style={{marginTop: 16}}>
+          <FlatList
+            keyboardShouldPersistTaps="always"
+            data={handleSearchData()}
+            keyExtractor={keyExtractor}
+            renderItem={renderListItem}
+            removeClippedSubviews={true}
+            // getItemLayout={getItemLayout}
+          />
+        </View>
+      </LinearGradient>
     </SafeAreaView>
   );
 };

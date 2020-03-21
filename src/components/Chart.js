@@ -15,7 +15,7 @@ import {
   Stop,
   Circle,
   G,
-  Line,
+  // Line,
   Rect,
   Text,
 } from 'react-native-svg';
@@ -26,7 +26,7 @@ const ScreenHeight = Dimensions.get('window').height;
 const ScreenWidth = Dimensions.get('window').width;
 
 const ChartWidth = ScreenWidth * 0.94;
-const ChartHeight = ScreenHeight / 2;
+const ChartHeight = ScreenHeight / 1.8;
 
 const axesSvg = {fontSize: 10, fill: 'grey'};
 const verticalContentInset = {top: 10, bottom: 10};
@@ -38,13 +38,40 @@ const Decorator = ({x, y, data}) => {
       key={index}
       cx={x(index)}
       cy={y(value)}
-      r={5}
-      stroke={'#f3f3f3'}
+      r={3.8}
+      stroke={'rgb(0,0,0,0.1)'}
       strokeWidth={1}
       fill={'white'}
     />
   ));
 };
+
+const Clips = ({x, width}) => (
+  <Defs key={'clips'}>
+    <ClipPath id={'clip-path-1'} key={'0'}>
+      <Rect x={0} y={'0'} width={x(indexToClipFrom)} height={'100%'} />
+    </ClipPath>
+    <ClipPath id="clip-path-2" key={'1'}>
+      <Rect
+        x={x(indexToClipFrom)}
+        y={'0'}
+        width={width - x(indexToClipFrom)}
+        height={'100%'}
+      />
+    </ClipPath>
+  </Defs>
+);
+
+const Line = ({line}) => (
+  <Path
+    key={'line'}
+    d={line}
+    strokeWidth={2}
+    stroke={'rgb(59,59,59, 0.3)'}
+    // fill={'rgb(0,0,0,0.1)'}
+    clipPath={'url(#clip-path-1)'}
+  />
+);
 
 const Chart = props => {
   const {
@@ -52,30 +79,36 @@ const Chart = props => {
     backgroundColor,
     backgroundGradientFrom,
     backgroundGradientTo,
+    xAxisfill,
+    yAxisfill,
   } = props;
   const labels = Object.keys(stats).map(val => Number(val));
   const data = Object.values(stats);
   const xaxissvg = {
-    fill: 'black',
+    fill: 'white',
     fontSize: 10,
     fontFamily: 'Rubik-Regular',
   };
 
   const gridSvg = {
-    fillRule: 'evenodd',
-    strokeDashoffset: 8,
-    strokeLinejoin: 'round',
-    strokeDasharray: [8],
+    fillRule: 'nonzero',
+    // strokeDashoffset: 0,
+    // strokeLinejoin: 'round',
+    strokeDasharray: '',
+    strokeWidth: 0.3,
+    // strokeLinejoin: 'bevel',
+    // fill: 'rgb(51,51,51, 0.3xs)',
+    stroke: 'rgb(240,240,240, 0.5)',
   };
   const yAxisSvg = {
-    fill: 'black',
-    fontSize: 10,
+    fill: 'white',
+    fontSize: 11,
     fontFamily: 'Rubik-Regular',
   };
   const lineChartSvg = {
     stroke: 'white',
     strokeWidth: 1.5,
-    // fill: 'rgba(134, 65, 244, 0.2)',
+    fill: 'rgb(255,255,255,0.1)',
   };
   const Accessor = ({item}) => item;
   const formatLabelY = (value, index) =>
@@ -87,6 +120,50 @@ const Chart = props => {
   // In order for us to align the axes correctly we must know the height of the x-axis or the width of the x-axis
   // and then displace the other axis with just as many pixels. Simple but manual.
   return (
+    // <View>
+    //   <LineChart
+    //     data={{
+    //       labels: Object.keys(stats),
+    //       datasets: [
+    //         {
+    //           data: Object.values(stats),
+    //         },
+    //       ],
+    //     }}
+    //     width={ChartWidth} // from react-native
+    //     height={ChartWidth}
+    //     // yAxisLabel="$"
+    //     // yAxisSuffix="k"
+    //     yAxisInterval={1} // optional, defaults to 1
+    //     // yLabelsOffset={1.5}
+    //     yAxisSvg={yAxisSvg}
+    //     formatYLabel={formatLabelY}
+    //     chartConfig={{
+    //       backgroundColor: backgroundColor,
+    //       backgroundGradientFrom: backgroundGradientFrom,
+    //       backgroundGradientTo: backgroundGradientTo,
+    //       decimalPlaces: 0, // optional, defaults to 2dp
+    //       color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    //       labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    //       style: {
+    //         backgroundColor: 'red',
+    //         // borderRadius: 12,
+    //         // padding: 16,
+    //       },
+    //       propsForDots: {
+    //         r: '5',
+    //         strokeWidth: 1,
+    //         stroke: 'black',
+    //       },
+    //     }}
+    //     bezier
+    //     style={{
+    //       marginVertical: 16,
+    //       borderRadius: 16,
+    //     }}
+    //   />
+    // </View>
+
     <LinearGradient
       colors={[backgroundGradientTo, backgroundGradientFrom]}
       style={styles.container}>
@@ -99,16 +176,17 @@ const Chart = props => {
         svg={yAxisSvg}
       />
       <View style={styles.main}>
-        <LineChart
+        <AreaChart
           style={styles.chart}
           data={data}
           contentInset={verticalContentInset}
           svg={lineChartSvg}
+          gridMin={10}
           // curve={shape.curveLinear}
         >
-          <Grid direction="HORIZONTAL" svg={gridSvg} />
+          <Grid direction="BOTH" svg={gridSvg} />
           <Decorator />
-        </LineChart>
+        </AreaChart>
         <XAxis
           style={styles.xAxis}
           data={labels}
@@ -123,8 +201,8 @@ const Chart = props => {
 
 const styles = StyleSheet.create({
   chart: {flex: 1},
-  main: {flex: 1, marginLeft: 12},
-  xAxis: {marginHorizontal: -10, height: xAxisHeight},
+  main: {flex: 1, marginLeft: 16},
+  xAxis: {marginHorizontal: -10, height: xAxisHeight, marginTop: 16},
   yAxis: {marginBottom: xAxisHeight},
   container: {
     height: ChartHeight,

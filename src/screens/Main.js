@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
   RefreshControl,
+  InteractionManager,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -21,70 +22,69 @@ import Chart from '../components/Chart';
 const colors = ['#0f0c29', '#302b63', '#24243e'];
 
 const Main = props => {
+  const [displayData, setDisplayData] = useState(null);
   useEffect(() => {
     props.getData();
+    // displayCharts();
+    // return () => {
+    //   displayCharts();
+    // };
   }, []);
 
-  const onRefresh = () => props.getData();
-
-  const selectPress = () => {
-    props.navigation.navigate('SelectCountry');
-  };
-  // console.log('Counting renders', props);
-  return (
-    <SafeAreaView style={styles.container}>
-      <Header
-        onSelectPress={selectPress}
-        country={
-          // props.data &&
-          // props.countries &&
-          props.countries.length > 0 && props.countries[props.selected]
-            ? props.countries[props.selected].value
-            : ''
-        }
-      />
-      <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={false} onRefresh={onRefresh} />
-        }
-        contentContainerStyle={styles.scrollContainer}>
-        <View style={{margin: 20, marginBottom: 4}}>
-          <Text style={styles.statText}>Stats</Text>
+  useEffect(() => {
+    setDisplayData(
+      props.loading ? (
+        <View style={styles.scrollContainer}>
+          <ActivityIndicator size="large" color="black" />
         </View>
-        <View style={styles.statContainer}>
-          <StatsCard
-            confirmed={props.confirmedCount}
-            recovered={props.recoveredCount}
-            deaths={props.deathCount}
-          />
-        </View>
-
-        {props.loading ? (
-          <View style={styles.loaderContainer}>
-            <ActivityIndicator size="large" color="black" />
-          </View>
-        ) : (
+      ) : (
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={false} onRefresh={onRefresh} />
+          }
+          horizontal
+          contentContainerStyle={styles.scrollContainer}>
           <View style={styles.chartContainer}>
+            <StatsCard
+              colors={['#434343', '#000000']}
+              value={props.confirmedCount}
+              type="CONFIRMED"
+            />
             {props.confirmed &&
             props.confirmed.length > 0 &&
             props.confirmed[props.selected] ? (
               <Chart
-                backgroundGradientFrom="#606c88"
-                backgroundGradientTo="#3f4c6b"
+                backgroundColor="#000000"
+                backgroundGradientFrom="#7F8C8D"
+                backgroundGradientTo="#000000"
                 stats={props.confirmed[props.selected].data}
               />
             ) : null}
-
+          </View>
+          <View style={styles.chartContainer}>
+            <StatsCard
+              colors={['#3BB78F', '#0BAB64']}
+              value={props.recoveredCount}
+              type="RECOVERED"
+            />
             {props.recovered &&
             props.recovered.length > 0 &&
             props.recovered[props.selected] ? (
               <Chart
                 backgroundColor="rgb(81, 176, 86)"
-                backgroundGradientFrom="#56ab2f"
-                backgroundGradientTo="#a8e063"
+                backgroundGradientFrom="#0BAB64"
+                backgroundGradientTo="#3BB78F"
                 stats={props.recovered[props.selected].data}
               />
             ) : null}
+          </View>
+          <View style={styles.chartContainer}>
+            <StatsCard
+              colors={['#eb3349', '#f45c43']}
+              value={props.deathCount}
+              type="DEATHS"
+            />
             {props.deaths &&
             props.deaths.length > 0 &&
             props.deaths[props.selected] ? (
@@ -96,19 +96,66 @@ const Main = props => {
               />
             ) : null}
           </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+      ),
+    );
+  }, [props.selected, props.loading]);
+
+  // const displayCharts = () => {
+  //   return setTimeout(() => {
+  //     setDisplayData(
+
+  //     );
+  //   }, 100);
+  // };
+
+  const onRefresh = () => props.getData();
+
+  const selectPress = () => {
+    props.navigation.navigate('SelectCountry');
+  };
+  return (
+    <SafeAreaView style={styles.container}>
+      <LinearGradient style={{flex: 1}} colors={['#a3bded', '#e2ebf0']}>
+        <Header
+          onSelectPress={selectPress}
+          country={
+            // props.data &&
+            // props.countries &&
+            props.countries.length > 0 && props.countries[props.selected]
+              ? props.countries[props.selected].value
+              : ''
+          }
+        />
+        <View
+          // refreshControl={
+          //   <RefreshControl refreshing={false} onRefresh={onRefresh} />
+          // }
+          style={styles.scrollContainer}>
+          <View style={{margin: 20, marginBottom: 4}}>
+            <Text style={styles.statText}>Stats</Text>
+          </View>
+          {/* <View style={styles.statContainer}> */}
+          {/* <StatsCard
+            confirmed={props.confirmedCount}
+            recovered={props.recoveredCount}
+            deaths={props.deathCount}
+          /> */}
+          {/* </View> */}
+          {displayData}
+        </View>
+      </LinearGradient>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {flex: 1},
-  // scrollContainer: {alignItems: 'center'},
+  scrollContainer: {alignItems: 'center'},
   statContainer: {alignItems: 'center'},
   statText: {fontFamily: 'Rubik-Medium', fontSize: 16},
   loaderContainer: {alignItems: 'center'},
-  chartContainer: {alignItems: 'center'},
+  chartContainer: {padding: 8},
 });
 
 const mapStateToProps = state => ({

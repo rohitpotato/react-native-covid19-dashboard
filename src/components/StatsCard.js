@@ -5,18 +5,18 @@ import LinearGradient from 'react-native-linear-gradient';
 const ScreenHeight = Dimensions.get('window').height;
 const ScreenWidth = Dimensions.get('window').width;
 
-const colors = ['#0f0c29', '#302b63', '#24243e'];
+// const colors = ['#0f0c29', '#302b63', '#24243e'];
 const StatsCard = props => {
-  const {confirmed, recovered, deaths} = props;
-  const active = confirmed - recovered - deaths;
+  const {colors, type, value} = props;
+  // const active = confirmed - recovered - deaths;
   return (
     <LinearGradient colors={colors} style={styles.container}>
       <View style={styles.statsContainer}>
         <View style={styles.stat}>
-          <Text style={styles.confirmedText}>CONFIRMED:</Text>
-          <Text style={styles.confirmedText}>{confirmed}</Text>
+          <Text style={styles.confirmedText}>{type}:</Text>
+          <Text style={styles.confirmedText}>{value}</Text>
         </View>
-        <View style={styles.stat}>
+        {/* <View style={styles.stat}>
           <Text style={styles.recoveredText}>RECOVERED:</Text>
           <Text style={styles.confirmedText}>{recovered}</Text>
         </View>
@@ -27,7 +27,7 @@ const StatsCard = props => {
         <View style={styles.stat}>
           <Text style={styles.deathsText}>ACTIVE:</Text>
           <Text style={styles.confirmedText}>{active}</Text>
-        </View>
+        </View> */}
       </View>
     </LinearGradient>
   );
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgb(69, 95, 180)',
     borderWidth: 0.3,
     borderColor: 'transparent',
-    margin: 16,
+    // margin: 16,
     opacity: 0.85,
     borderRadius: 8,
     width: ScreenWidth * 0.93,
