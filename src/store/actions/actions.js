@@ -28,7 +28,6 @@ export const getData = () => async dispatch => {
         payload: e.stack.toString(),
       });
     });
-
     data[0].push({
       type: 'confirmed',
       country: 'WorldWide',
@@ -55,7 +54,10 @@ export const getData = () => async dispatch => {
       longitude: 0,
       data: parseWorldData(data[2][0].data, data[2]),
     });
-    let country_idx = data[0].length - 1;
+    let country_idx_confirmed = data[0].length - 1;
+    let country_idx_recovered = data[1].length - 1;
+    let country_idx_deaths = data[2].length - 1;
+
     dispatch({
       type: actionTypes.GET_TIME_LAPSE_DATA,
       payload: {
@@ -64,9 +66,9 @@ export const getData = () => async dispatch => {
         deaths: data[2],
         countries: setCountries(data[0]),
         selected: data[0].length - 1,
-        confirmedCount: _.max(_.values(data[0][country_idx].data)),
-        recoveredCount: _.max(_.values(data[1][country_idx].data)),
-        deathCount: _.max(_.values(data[2][country_idx].data)),
+        confirmedCount: _.max(_.values(data[0][country_idx_confirmed].data)),
+        recoveredCount: _.max(_.values(data[1][country_idx_recovered].data)),
+        deathCount: _.max(_.values(data[2][country_idx_deaths].data)),
       },
     });
     ALL_DATA = data;

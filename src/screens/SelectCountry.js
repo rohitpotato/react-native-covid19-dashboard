@@ -81,8 +81,8 @@ const SelectCountry = props => {
   };
 
   return (
-    <SafeAreaView>
-      <LinearGradient colors={['#a1c4fd', '#c2e9fb']}>
+    <SafeAreaView style={{flex: 1}}>
+      <LinearGradient style={{flex: 1}} colors={['#a1c4fd', '#c2e9fb']}>
         <SearchBar onTextChange={onTextChange} />
         <View style={{marginTop: 16}}>
           <FlatList

@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   Linking,
+  ActivityIndicator,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {NEWS_API_URL} from '../config/constants';
@@ -136,14 +137,20 @@ const News = props => {
             {error ? (
               <Text style={styles.errorText}>{error}</Text>
             ) : (
-              <FlatList
-                onRefresh={getArticles}
-                refreshing={loading}
-                showsVerticalScrollIndicator={false}
-                data={articles}
-                keyExtractor={keyExtractor}
-                renderItem={renderListItem}
-              />
+              <View>
+                {loading ? (
+                  <ActivityIndicator size="small" color="blue" />
+                ) : (
+                  <FlatList
+                    onRefresh={getArticles}
+                    refreshing={loading}
+                    showsVerticalScrollIndicator={false}
+                    data={articles}
+                    keyExtractor={keyExtractor}
+                    renderItem={renderListItem}
+                  />
+                )}
+              </View>
             )}
           </View>
         </View>
@@ -155,7 +162,7 @@ const News = props => {
 const styles = StyleSheet.create({
   container: {
     // alignItems: 'flex-start',
-    // flex: 1,
+    flex: 1,
   },
   headingContainer: {
     padding: 16,

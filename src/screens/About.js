@@ -15,11 +15,11 @@ const About = props => {
       <LinearGradient style={styles.container} colors={['#a3bded', '#6991c7']}>
         <View style={styles.aboutContainer}>
           <Text style={{fontFamily: 'Rubik-MediumItalic', fontSize: 24}}>
-            About this project:
+            Wash your Hands!
           </Text>
         </View>
         <ScrollView contentContainerStyle={styles.aboutContainer}>
-          <View style={styles.questionContainer}>
+          <View style={{alignItems: 'center'}}>
             <Text style={styles.questionText}>Who am I?</Text>
           </View>
           <View style={styles.answerContainer}>
