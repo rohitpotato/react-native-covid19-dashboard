@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.3,
     borderColor: 'transparent',
     // margin: 16,
-    opacity: 0.85,
+    opacity: 0.7,
     borderRadius: 8,
     width: ScreenWidth * 0.93,
   },

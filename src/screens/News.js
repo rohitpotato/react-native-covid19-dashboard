@@ -81,7 +81,7 @@ const ListItem = React.memo(props => {
 });
 
 const News = props => {
-  const query = 'covid';
+  const query = 'corona+covid19+coronavirus+covid-19';
   const dateMargin = 4;
   const dateFromMargin = moment()
     .subtract(dateMargin, 'd')
@@ -93,9 +93,7 @@ const News = props => {
 
   const getArticles = async controller => {
     try {
-      let data = await fetch(
-        `${NEWS_API_URL}&q=${query}&from=${dateFromMargin}&sortBy=latest`,
-      );
+      let data = await fetch(`${NEWS_API_URL}&q=${query}&sortBy=latest`);
       data = await data.json();
       setArticles(data.articles);
     } catch (e) {
@@ -137,7 +135,7 @@ const News = props => {
             {error ? (
               <Text style={styles.errorText}>{error}</Text>
             ) : (
-              <View>
+              <View style={{paddingBottom: 80}}>
                 {loading ? (
                   <ActivityIndicator size="small" color="blue" />
                 ) : (

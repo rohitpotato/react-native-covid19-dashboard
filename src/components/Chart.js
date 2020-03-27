@@ -196,7 +196,7 @@ const Chart = props => {
 };
 
 const styles = StyleSheet.create({
-  chart: {flex: 1},
+  chart: {flex: 1, opacity: 0.7},
   main: {flex: 1, paddingHorizontal: 16},
   xAxis: {marginHorizontal: -10, height: xAxisHeight, marginTop: 16},
   yAxis: {marginBottom: xAxisHeight},
@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     marginVertical: 12,
     borderRadius: 12,
     elevation: 1,
+    opacity: 0.7,
   },
   contentInsetX: {left: 10, right: 10},
 });
